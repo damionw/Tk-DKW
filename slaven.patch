@@ -1,0 +1,67 @@
+From slaven.rezic@berlin.de Sun Jan  6 17:16:21 2002
+Return-Path: <slaven.rezic@berlin.de>
+Received: from mailoutvl21.berlin.de ([195.243.105.33]) by stormy.ibl.bm
+          (Post.Office MTA v3.5.3 release 223 ID# 0-72119U16500L14100S0V35)
+          with ESMTP id bm for <dkw@rcm.bm>; Sun, 6 Jan 2002 17:20:03 -0400
+Received: from herceg.de ([213.6.0.229]) by mailoutvl21.berlin.de
+          (InterMail vK.4.03.05.00 201-232-132 license c0e4b842f1eddc5308d584e55543c802)
+          with ESMTP id <20020106212142.YMUY27460.mailoutvl21@herceg.de>
+          for <dkw@rcm.bm>; Sun, 6 Jan 2002 22:21:42 +0100
+Received: (from eserte@localhost)
+	by vran.herceg.de (8.11.4/8.9.3) id g06LGLt06631;
+	Sun, 6 Jan 2002 22:16:21 +0100 (CET)
+	(envelope-from slaven.rezic@berlin.de)
+Date: Sun, 6 Jan 2002 22:16:21 +0100 (CET)
+Message-Id: <200201062116.g06LGLt06631@vran.herceg.de>
+X-Authentication-Warning: vran.herceg.de: eserte set sender to slaven.rezic@berlin.de using -f
+From: Slaven Rezic <slaven.rezic@berlin.de>
+To: dkw@rcm.bm
+Subject: Tk-DKW: Tk::TabFrame
+Reply-to: slaven.rezic@berlin.de
+X-Mailer: GNU Emacs/sendmail [version 20.7.1]
+Status: R 
+X-Status: N
+
+Hello Damion,
+
+the -font parameter in Tk::TabFrame seems to be required. The patch
+below relaxes that.
+
+Regards,
+	Slaven
+
+
+diff --exclude blib -ru ../../build/Tk-DKW-0.02/Tk/TabFrame.pm ./Tk/TabFrame.pm
+--- ../../build/Tk-DKW-0.02/Tk/TabFrame.pm	Fri Feb 19 21:49:01 1999
++++ ./Tk/TabFrame.pm	Sun Jan  6 22:12:14 2002
+@@ -98,13 +98,14 @@
+         '-borderwidth' => 0,
+        );
+ 
++    my $font = $this->cget(-font);
+     my $l_Button = $l_TabFrame->Component
+        (
+         'Button' => 'Button',
+         '-command' => sub {$this->configure ('-current' => $p_Widget);},
+         (defined ($p_Color) ? ('-bg' => $p_Color) : ()),
+         '-text' => $p_Caption || $p_Widget->name(),
+-        '-font' => $this->cget (-font),
++        (defined $font ? ('-font' => $font) : ()),
+         '-relief' => 'flat',
+         '-borderwidth' => 0,
+         '-takefocus' => 1,
+@@ -548,4 +549,4 @@
+ February 2, 1999 : raise/lower semantics changed somehow in Tk800.012. Added
+                    explicit lower calls for frame and button reordering.
+ 
+-=cut
++=cut
+
+
+-- 
+Slaven Rezic - slaven.rezic@berlin.de
+
+    tktimex - project time manager
+    http://sourceforge.net/projects/ptktools/
+
+

@@ -1,0 +1,81 @@
+--- /home/fergal/downloads/perl/Tk-DKW-0.01/Tk/Columns.pm	Wed Jun  3 16:00:59 1998
++++ Columns.pm	Fri Oct 23 16:41:18 1998
+@@ -562,6 +603,13 @@
+     $this->Refresh();
+    }
+ 
++sub selectionClear
++{
++	my ($this) = shift;
++
++	$this->{m_ListList}->[0]->selectionClear(@_);
++}
++
+ sub DoScrollbarBindings
+    {
+     my $this = shift;
+@@ -617,36 +665,76 @@
+ 
+     $p_Button->{m_Order} = ! $p_Button->{m_Order};
+ 
++		my @items_to_insert;
+     foreach my $l_Key (@l_SortedKeys)
+-       {
+-        foreach my $l_Index (@{$l_Keys {$l_Key}})
+-           {
+-            push (@l_Sorted, [$this->get ($l_Index)]);
+-           }
+-       }
+-
+-    while ($this->size())
+-       {
+-        $this->delete ('end');
+-       }
++      {
++       foreach my $l_Index (@{$l_Keys {$l_Key}})
++         {
++           push(@items_to_insert, [$this->get ($l_Index)]);
++         }
++      }
+ 
+-    foreach my $l_Ref (@l_Sorted)
+-       {
+-        $this->insert ('end', @{$l_Ref});
+-       }
++    $this->delete (0, 'end');
++    $this->insert (0, \@items_to_insert);
+ 
+     $this->Refresh();
+    }
+ 
+ sub insert
+    {
+     my ($this, $p_Where, @p_Elements) = (shift, @_);
+ 
++    my $l_entries;
++    if (ref $p_Elements[0])
++		  {
++		  	$l_entries = $p_Elements[0]
++		  }
++		else
++		  {
++		   $l_entries = [[@p_Elements]];
++		  }
++
++    my $column_index = 0;
+     foreach my $l_List (@{$this->{m_ListList}})
+-       {
+-        $l_List->insert ($p_Where, shift @p_Elements);
++      {
++       my @values_for_this_column;
++       foreach my $entry (@{$l_entries})
++         {
++          push(@values_for_this_column, $entry->[$column_index]);
++         }
++       $l_List->insert ($p_Where, @values_for_this_column);
++       $column_index++;
+        }
+     $this->Refresh();
+    }
+ 
+
